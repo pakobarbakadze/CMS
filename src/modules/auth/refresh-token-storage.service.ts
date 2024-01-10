@@ -12,9 +12,10 @@ export class RefreshTokenStorage {
   ) {}
 
   async insert(insertRefreshTokenDto: InsertRefreshTokenDto): Promise<void> {
-    const { userId, deviceId, token } = insertRefreshTokenDto;
+    const { user, deviceId, token } = insertRefreshTokenDto;
+
     const refreshToken = new RefreshToken();
-    refreshToken.userId = userId;
+    refreshToken.user = user;
     refreshToken.deviceId = deviceId;
     refreshToken.refreshToken = token;
 
@@ -23,7 +24,7 @@ export class RefreshTokenStorage {
 
   async validate(userId: string, deviceId: string): Promise<boolean> {
     const refreshToken = await this.refreshTokenRepository.findOne({
-      where: { userId, deviceId },
+      where: { user: { id: userId }, deviceId },
     });
     if (!refreshToken) {
       throw new Error('Invalidated Refresh Token');
@@ -32,6 +33,6 @@ export class RefreshTokenStorage {
   }
 
   async invalidate(userId: string): Promise<void> {
-    await this.refreshTokenRepository.delete({ userId });
+    await this.refreshTokenRepository.delete({ user: { id: userId } });
   }
 }

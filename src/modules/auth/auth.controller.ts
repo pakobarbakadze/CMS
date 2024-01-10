@@ -44,7 +44,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('invalidate-token')
+  @Post('sign-out')
   invalidateToken(@Headers('authorization') authorization: string) {
     return this.authService.invalidateToken(authorization);
   }

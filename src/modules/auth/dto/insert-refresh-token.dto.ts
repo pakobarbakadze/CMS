@@ -1,5 +1,7 @@
+import { User } from 'src/modules/user/entities/user.entity';
+
 export default class InsertRefreshTokenDto {
-  userId: string;
+  user: User;
   deviceId?: string;
   token: string;
 }

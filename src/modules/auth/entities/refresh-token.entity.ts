@@ -1,13 +1,13 @@
 import Model from 'src/entities/model.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity('refresh-tokens')
 export class RefreshToken extends Model {
-  @OneToMany(() => User, (user) => user.id)
-  userId: string;
+  @ManyToOne(() => User, (user) => user.id)
+  user: User;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   deviceId: string;
 
   @Column({ unique: true })
