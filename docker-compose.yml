@@ -4,9 +4,9 @@ services:
   app:
     build:
       context: .
-      target: NODE_ENV
+      target: ${NODE_ENV}
       dockerfile: Dockerfile
-    container_name: CMS-docker-postgres
+    container_name: CMS-docker
     env_file:
       - .env
     ports:
@@ -22,11 +22,11 @@ services:
   db:
     image: postgres
     restart: always
+    container_name: CSM-postgres
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    container_name: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
