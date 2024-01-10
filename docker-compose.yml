@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: NODE_ENV
+      dockerfile: Dockerfile
+    container_name: CMS-docker-postgres
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+      - ${DEBUGGER_PORT}:${DEBUGGER_PORT}
+    depends_on:
+      - db
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: npm run start:debug:container
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    container_name: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+volumes:
+  pgdata:
