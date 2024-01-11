@@ -15,8 +15,11 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
-import { AuthorizedRequest } from 'src/interfaces/request.interface';
-import { Role } from '../auth/enum/role.enum';
+import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { Role } from '../../types/enum/role.enum';
+import { AbilitiesGuard } from '../casl/guard/ability.guard';
+import { checkAbilites } from '../casl/decorator/abilities.decorator';
+import { Action } from '../casl/enum/action.enum';
 
 @Controller('posts')
 export class PostsController {
@@ -42,13 +45,15 @@ export class PostsController {
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @checkAbilites({ action: Action.Delete, subject: Post })
+  @UseGuards(JwtAuthGuard, AbilitiesGuard)
   remove(@Param('id') id: string) {
     return this.postsService.remove(id);
   }

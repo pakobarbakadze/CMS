@@ -2,7 +2,7 @@ import { Entity, Column, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import Model from 'src/entities/model.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
-import { Role } from 'src/modules/auth/enum/role.enum';
+import { Role } from 'src/types/enum/role.enum';
 
 @Entity('users')
 export class User extends Model {

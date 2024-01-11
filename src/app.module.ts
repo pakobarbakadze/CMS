@@ -5,6 +5,7 @@ import { TypeOrmConfig } from './config/db';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { PostsModule } from './modules/post/posts.module';
+import { CaslModule } from './modules/casl/casl.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PostsModule } from './modules/post/posts.module';
     AuthModule,
     UserModule,
     PostsModule,
+    CaslModule,
   ],
 })
 export class AppModule {}
