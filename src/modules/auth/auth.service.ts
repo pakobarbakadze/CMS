@@ -7,11 +7,13 @@ import SignInDto from './dto/sign-in.dto';
 import SignUpDto from './dto/sign-up.dto';
 import { RefreshTokenStorage } from './refresh-token-storage.service';
 import { Payload } from './type/payload.type';
+import { CompanyService } from '../company/company.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
+    private readonly companyService: CompanyService,
     private readonly refreshTokenStorage: RefreshTokenStorage,
     private readonly configSercive: ConfigService,
     private readonly jwtService: JwtService,
@@ -34,14 +36,17 @@ export class AuthService {
   }
 
   public async signUp(signUpDto: SignUpDto) {
-    const { username, password } = signUpDto;
+    const { username, password, companyName } = signUpDto;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    const company = await this.companyService.findByName(companyName);
+
     const createdUser = await this.userService.create({
       username,
       hashedPassword,
+      company,
     });
     delete createdUser.password;
 

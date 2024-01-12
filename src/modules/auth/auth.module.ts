@@ -12,10 +12,12 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategy/jwt-refresh.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
+import { CompanyModule } from '../company/company.module';
 
 @Module({
   imports: [
     UserModule,
+    CompanyModule,
     TypeOrmModule.forFeature([RefreshToken]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({

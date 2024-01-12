@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { PostsModule } from './modules/post/posts.module';
 import { CaslModule } from './modules/casl/casl.module';
+import { CompanyModule } from './modules/company/company.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CaslModule } from './modules/casl/casl.module';
     UserModule,
     PostsModule,
     CaslModule,
+    CompanyModule,
   ],
 })
 export class AppModule {}

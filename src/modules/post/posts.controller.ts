@@ -22,7 +22,7 @@ import { checkAbilites } from '../casl/decorator/abilities.decorator';
 import { Action } from '../casl/enum/action.enum';
 import { Post as PostEntity } from './entities/post.entity';
 
-@Controller('posts')
+@Controller('post')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 

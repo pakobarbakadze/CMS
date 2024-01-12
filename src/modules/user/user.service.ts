@@ -11,11 +11,12 @@ export class UserService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
-    const { username, hashedPassword } = createUserDto;
+    const { username, hashedPassword, company } = createUserDto;
 
     const user = new User();
     user.username = username;
     user.password = hashedPassword;
+    user.company = company;
 
     return this.userRepository.save(user);
   }
