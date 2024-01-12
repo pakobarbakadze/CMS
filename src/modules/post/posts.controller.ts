@@ -1,13 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   Req,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -17,9 +17,10 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { AuthorizedRequest } from 'src/types/interface/request.interface';
 import { Role } from '../../types/enum/role.enum';
-import { AbilitiesGuard } from '../casl/guard/ability.guard';
+import { PostAbilityGuard } from '../casl/guard/post-ability.guard';
 import { checkAbilites } from '../casl/decorator/abilities.decorator';
 import { Action } from '../casl/enum/action.enum';
+import { Post as PostEntity } from './entities/post.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -35,6 +36,8 @@ export class PostsController {
   }
 
   @Get()
+  @checkAbilites({ action: Action.Read, subject: PostEntity })
+  @UseGuards(JwtAuthGuard, PostAbilityGuard)
   findAll() {
     return this.postsService.findAll();
   }
@@ -45,15 +48,15 @@ export class PostsController {
   }
 
   @Patch(':id')
-  @Roles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @checkAbilites({ action: Action.Update, subject: PostEntity, fetch: true })
+  @UseGuards(JwtAuthGuard, PostAbilityGuard)
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  @checkAbilites({ action: Action.Delete, subject: Post })
-  @UseGuards(JwtAuthGuard, AbilitiesGuard)
+  @checkAbilites({ action: Action.Delete, subject: PostEntity })
+  @UseGuards(JwtAuthGuard, PostAbilityGuard)
   remove(@Param('id') id: string) {
     return this.postsService.remove(id);
   }

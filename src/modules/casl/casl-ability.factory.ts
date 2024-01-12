@@ -1,28 +1,26 @@
 import {
   AbilityBuilder,
-  AbilityClass,
-  ConditionsMatcher,
   ExtractSubjectType,
   InferSubjects,
-  PureAbility,
+  MongoAbility,
+  createMongoAbility,
+  mongoQueryMatcher,
 } from '@casl/ability';
-import { Injectable } from '@nestjs/common';
-
 import { Post } from '../post/entities/post.entity';
-import { User } from '../user/entities/user.entity';
 import { Action } from './enum/action.enum';
+import { User } from '../user/entities/user.entity';
+import { Injectable } from '@nestjs/common';
 import { Role } from 'src/types/enum/role.enum';
 
-type Subjects = InferSubjects<typeof Post | typeof User> | 'all';
-
-export type AppAbility = PureAbility<[Action, Subjects]>;
+type Subjects = InferSubjects<typeof Post> | 'all';
+export type AppAbility = MongoAbility<[Action, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder<
-      PureAbility<[Action, Subjects]>
-    >(PureAbility as AbilityClass<AppAbility>);
+    const { can, cannot, build } = new AbilityBuilder<AppAbility>(
+      createMongoAbility,
+    );
 
     can(Action.Read, 'all');
 
@@ -34,11 +32,10 @@ export class CaslAbilityFactory {
       can(Action.Manage, 'all');
     }
 
-    // can(Action.Update, Post, { author: { id: user.id } });
-
     return build({
       detectSubjectType: (item) =>
         item.constructor as ExtractSubjectType<Subjects>,
+      conditionsMatcher: mongoQueryMatcher,
     });
   }
 }

@@ -6,7 +6,7 @@ export const CHECK_ABILITY = 'check_ability';
 export interface RequiredRule {
   action: Action;
   subject: any;
-  conditions?: any;
+  fetch?: boolean;
 }
 
 export const checkAbilites = (requirements: RequiredRule) =>
