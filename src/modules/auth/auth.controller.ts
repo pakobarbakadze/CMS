@@ -2,18 +2,19 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Post,
   Request,
   UseGuards,
-  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import SignUpDto from './dto/sign-up.dto';
-import { LocalAuthGuard } from './guard/local-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { JwtRefreshTokenGuard } from './guard/jwt-refresh.guard';
+import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,27 +25,30 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('sign-in')
+  @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   signIn(@Request() req: any) {
     return this.authService.signIn(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
+  @UseGuards(JwtAuthGuard)
   getProfile(@Request() req: any) {
     return req.user;
   }
 
-  @UseGuards(JwtRefreshTokenGuard)
   @Post('refresh-token')
-  refreshToken(@Headers('authorization') authorization: string) {
-    return this.authService.refreshAccessToken(authorization);
+  @UseGuards(JwtRefreshTokenGuard)
+  refreshToken(
+    @Headers('authorization') authorization: string,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
+    return this.authService.refreshAccessToken(authorization, refreshTokenDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('sign-out')
+  @UseGuards(JwtAuthGuard)
   invalidateToken(@Headers('authorization') authorization: string) {
     return this.authService.invalidateToken(authorization);
   }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AssignRoleDto } from './dto/assign-role.dto';
@@ -44,5 +48,17 @@ export class UserService {
     user.role = role;
 
     return this.userRepository.save(user);
+  }
+
+  async validateUser(username: string, password: string) {
+    const user = await this.userRepository.findOne({ where: { username } });
+
+    if (!user) throw new UnauthorizedException('Invalid username or password');
+
+    if (await user.validatePassword(password)) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 }

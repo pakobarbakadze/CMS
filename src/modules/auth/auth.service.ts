@@ -1,13 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
+import { CompanyService } from '../company/company.service';
 import { UserService } from '../user/user.service';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import SignInDto from './dto/sign-in.dto';
 import SignUpDto from './dto/sign-up.dto';
 import { RefreshTokenStorage } from './refresh-token-storage.service';
 import { Payload } from './type/payload.type';
-import { CompanyService } from '../company/company.service';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
 
   // TODO: should first check if there is already refresh token saved on current device id
   // if there is then return error that user is already signed in.
-  public async signIn(signInDto: SignInDto) {
+  async signIn(signInDto: SignInDto) {
     const { id, username } = signInDto;
 
     const user = await this.userService.findById(id);
@@ -35,7 +36,7 @@ export class AuthService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  public async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto) {
     const { username, password, companyName } = signUpDto;
 
     const salt = await bcrypt.genSalt();
@@ -53,26 +54,16 @@ export class AuthService {
     return createdUser;
   }
 
-  public async validateUser(username: string, password: string) {
-    const user = await this.userService.findByUsername(username);
-
-    if (!user) throw new UnauthorizedException('Invalid username or password');
-
-    if (await user.validatePassword(password)) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
-  }
-
-  public async refreshAccessToken(
+  async refreshAccessToken(
     authorization: string,
+    refreshTokenDto: RefreshTokenDto,
   ): Promise<{ access_token: string }> {
+    const { deviceId } = refreshTokenDto;
     const refreshToken = authorization.split(' ')[1];
     const decoded = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configSercive.get<string>('REFRESH_JWT_SECRET'),
     });
-    await this.refreshTokenStorage.validate(decoded.sub, refreshToken);
+    await this.refreshTokenStorage.validate(decoded.sub, deviceId);
     const payload = { sub: decoded.sub, username: decoded.username };
     const accessToken = await this.jwtService.signAsync(payload);
 
@@ -80,7 +71,7 @@ export class AuthService {
   }
 
   // TODO: It should invalidate tokens which have same deviceId as user is sending request from
-  public async invalidateToken(authorization: string) {
+  async invalidateToken(authorization: string) {
     const token = authorization.split(' ')[1];
     const decoded = await this.jwtService.verifyAsync(token);
     await this.refreshTokenStorage.invalidate(decoded.sub);

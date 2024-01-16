@@ -1,16 +1,14 @@
 import {
   AbilityBuilder,
   ExtractSubjectType,
-  InferSubjects,
-  MongoAbility,
   createMongoAbility,
   mongoQueryMatcher,
 } from '@casl/ability';
-import { Post } from '../post/entities/post.entity';
-import { Action } from './types/enum/action.enum';
-import { User } from '../user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Role } from 'src/types/enum/role.enum';
+import { Post } from '../post/entities/post.entity';
+import { User } from '../user/entities/user.entity';
+import { Actions } from './types/enum/action.enum';
 import { AppAbility, Subjects } from './types/type/casl.type';
 
 @Injectable()
@@ -20,14 +18,14 @@ export class CaslAbilityFactory {
       createMongoAbility,
     );
 
-    can(Action.Read, 'all');
+    can(Actions.Read, 'all');
 
     if (user.role === Role.Author) {
-      can(Action.Create, Post);
+      can(Actions.Create, Post);
     }
 
     if (user.role === Role.Admin) {
-      can(Action.Manage, 'all');
+      can(Actions.Manage, 'all');
     }
 
     return build({
