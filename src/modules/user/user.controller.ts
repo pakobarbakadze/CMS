@@ -2,12 +2,13 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Param,
   Patch,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { Role } from 'src/types/enum/role.enum';
+import { AuthorizedRequest } from 'src/types/interface/request.interface';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
@@ -39,13 +40,10 @@ export class UserController {
   @Patch('/change-password')
   @UseGuards(JwtAuthGuard)
   changePassword(
-    @Headers('authorization') authorization: string,
+    @Req() request: AuthorizedRequest,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.userPasswordService.changePassword(
-      authorization,
-      changePasswordDto,
-    );
+    return this.userPasswordService.changePassword(request, changePasswordDto);
   }
 
   @Patch('/change-user-password')
