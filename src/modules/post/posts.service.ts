@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/types/enum/role.enum';
+import { MoreThanOrEqual, Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
-import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -15,15 +16,22 @@ export class PostsService {
   create(createPostDto: CreatePostDto, author: User) {
     const { title, content } = createPostDto;
 
-    const post = new Post();
-    post.title = title;
-    post.content = content;
-    post.author = author;
+    const post = this.postRepository.create({
+      title,
+      content,
+      author,
+    });
 
     return this.postRepository.save(post);
   }
 
-  findAll() {
+  findAll(user: User) {
+    if (user.role === Role.User) {
+      return this.postRepository.find({
+        where: { created_at: MoreThanOrEqual(user.created_at) },
+      });
+    }
+
     return this.postRepository.find();
   }
 

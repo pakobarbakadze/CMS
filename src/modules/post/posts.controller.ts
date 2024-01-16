@@ -36,11 +36,13 @@ export class PostsController {
   @Get()
   @checkAbilites({ action: Action.Read, subject: PostEntity })
   @UseGuards(JwtAuthGuard, PostAbilityGuard)
-  findAll() {
-    return this.postsService.findAll();
+  findAll(@Req() request: AuthorizedRequest) {
+    return this.postsService.findAll(request.user);
   }
 
   @Get(':id')
+  @checkAbilites({ action: Action.Read, subject: PostEntity })
+  @UseGuards(JwtAuthGuard, PostAbilityGuard)
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(id);
   }

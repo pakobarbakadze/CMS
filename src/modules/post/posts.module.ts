@@ -1,12 +1,12 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { PostsController } from './posts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Post } from './entities/post.entity';
 import { CaslModule } from '../casl/casl.module';
+import { Post } from './entities/post.entity';
+import { PostsController } from './posts.controller';
+import { PostsService } from './posts.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), forwardRef(() => CaslModule)],
+  imports: [forwardRef(() => CaslModule), TypeOrmModule.forFeature([Post])],
   controllers: [PostsController],
   providers: [PostsService],
   exports: [PostsService],
