@@ -1,9 +1,9 @@
-import { Entity, Column, OneToMany, ManyToOne } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import Model from 'src/entities/model.entity';
+import { Company } from 'src/modules/company/entities/company.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
 import { Role } from 'src/types/enum/role.enum';
-import { Company } from 'src/modules/company/entities/company.entity';
+import { BeforeInsert, Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends Model {
@@ -28,5 +28,11 @@ export class User extends Model {
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
+  }
+
+  @BeforeInsert()
+  async hashPass() {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
   }
 }

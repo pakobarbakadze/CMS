@@ -32,6 +32,12 @@ export class AuthController {
     return this.authService.signIn(req.user);
   }
 
+  @Post('sign-out')
+  @UseGuards(JwtAuthGuard)
+  invalidateToken(@Headers('authorization') authorization: string) {
+    return this.authService.invalidateToken(authorization);
+  }
+
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   getProfile(@Request() req: any) {
@@ -45,11 +51,5 @@ export class AuthController {
     @Body() refreshTokenDto: RefreshTokenDto,
   ) {
     return this.authService.refreshAccessToken(authorization, refreshTokenDto);
-  }
-
-  @Post('sign-out')
-  @UseGuards(JwtAuthGuard)
-  invalidateToken(@Headers('authorization') authorization: string) {
-    return this.authService.invalidateToken(authorization);
   }
 }

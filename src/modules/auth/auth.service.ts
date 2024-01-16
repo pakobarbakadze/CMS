@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { CompanyService } from '../company/company.service';
+import { User } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import SignInDto from './dto/sign-in.dto';
@@ -36,17 +36,14 @@ export class AuthService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto): Promise<User> {
     const { username, password, companyName } = signUpDto;
-
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     const company = await this.companyService.findByName(companyName);
 
     const createdUser = await this.userService.create({
       username,
-      hashedPassword,
+      password,
       company,
     });
     delete createdUser.password;

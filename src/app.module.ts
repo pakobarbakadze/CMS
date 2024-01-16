@@ -3,13 +3,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfig } from './config/db';
 import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
-import { PostsModule } from './modules/post/posts.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { CompanyModule } from './modules/company/company.module';
+import { PostsModule } from './modules/post/posts.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
+    AuthModule,
+    UserModule,
+    PostsModule,
+    CaslModule,
+    CompanyModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -17,11 +22,6 @@ import { CompanyModule } from './modules/company/company.module';
         TypeOrmConfig.createTypeOrmOptions(configService),
       inject: [ConfigService],
     }),
-    AuthModule,
-    UserModule,
-    PostsModule,
-    CaslModule,
-    CompanyModule,
   ],
 })
 export class AppModule {}
