@@ -3,12 +3,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AssignRoleDto } from './dto/assign-role.dto';
-import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 
@@ -16,8 +13,6 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService,
-    private readonly configSercive: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -51,27 +46,6 @@ export class UserService {
       throw new NotFoundException(`User with username '${username}' not found`);
 
     user.role = role;
-
-    return this.userRepository.save(user);
-  }
-
-  async changePassword(
-    authorization: string,
-    changePasswordDto: ChangePasswordDto,
-  ): Promise<User> {
-    const { password } = changePasswordDto;
-    const token = authorization.split(' ')[1];
-    const decoded = await this.jwtService.verifyAsync(token, {
-      secret: this.configSercive.get<string>('ACCESS_JWT_SECRET'),
-    });
-
-    const user = await this.userRepository.findOne({
-      where: { id: decoded.sub },
-    });
-    user.password = password;
-    await user.hashPass();
-
-    delete user.password;
 
     return this.userRepository.save(user);
   }

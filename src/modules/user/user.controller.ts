@@ -13,11 +13,16 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { AssignRoleDto } from './dto/assign-role.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { ChangeUserPasswordDto } from './dto/change-user-password.dto';
+import { UserPasswordService } from './user-password.service';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userPasswordService: UserPasswordService,
+  ) {}
 
   @Get(':username')
   findOne(@Param('username') username: string) {
@@ -37,6 +42,16 @@ export class UserController {
     @Headers('authorization') authorization: string,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.userService.changePassword(authorization, changePasswordDto);
+    return this.userPasswordService.changePassword(
+      authorization,
+      changePasswordDto,
+    );
+  }
+
+  @Patch('/change-user-password')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  changeUserPassword(@Body() changeUserPasswordDto: ChangeUserPasswordDto) {
+    return this.userPasswordService.changeUserPassword(changeUserPasswordDto);
   }
 }
