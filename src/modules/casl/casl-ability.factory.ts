@@ -7,13 +7,11 @@ import {
   mongoQueryMatcher,
 } from '@casl/ability';
 import { Post } from '../post/entities/post.entity';
-import { Action } from './enum/action.enum';
+import { Action } from './types/enum/action.enum';
 import { User } from '../user/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Role } from 'src/types/enum/role.enum';
-
-type Subjects = InferSubjects<typeof Post> | 'all';
-export type AppAbility = MongoAbility<[Action, Subjects]>;
+import { AppAbility, Subjects } from './types/type/casl.type';
 
 @Injectable()
 export class CaslAbilityFactory {

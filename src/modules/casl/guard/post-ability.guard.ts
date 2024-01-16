@@ -1,8 +1,8 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { CHECK_ABILITY, RequiredRule } from '../decorator/abilities.decorator';
-import { CaslAbilityFactory } from '../casl-ability.factory';
 import { PostsService } from 'src/modules/post/posts.service';
+import { CaslAbilityFactory } from '../casl-ability.factory';
+import { CHECK_ABILITY, RequiredRule } from '../decorator/abilities.decorator';
 
 @Injectable()
 export class PostAbilityGuard implements CanActivate {

@@ -1,26 +1,23 @@
 import {
-  Controller,
-  Get,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Req,
   UseGuards,
-  Post,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { checkAbilites } from '../casl/decorator/abilities.decorator';
+import { PostAbilityGuard } from '../casl/guard/post-ability.guard';
+import { Action } from '../casl/types/enum/action.enum';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { RolesGuard } from '../auth/guard/roles.guard';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
-import { Roles } from '../auth/decorator/roles.decorator';
-import { AuthorizedRequest } from 'src/types/interface/request.interface';
-import { Role } from '../../types/enum/role.enum';
-import { PostAbilityGuard } from '../casl/guard/post-ability.guard';
-import { checkAbilites } from '../casl/decorator/abilities.decorator';
-import { Action } from '../casl/enum/action.enum';
 import { Post as PostEntity } from './entities/post.entity';
+import { PostsService } from './posts.service';
 
 @Controller('post')
 export class PostsController {
@@ -48,7 +45,7 @@ export class PostsController {
   }
 
   @Patch(':id')
-  @checkAbilites({ action: Action.Update, subject: PostEntity, fetch: true })
+  @checkAbilites({ action: Action.Update, subject: PostEntity })
   @UseGuards(JwtAuthGuard, PostAbilityGuard)
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postsService.update(id, updatePostDto);
