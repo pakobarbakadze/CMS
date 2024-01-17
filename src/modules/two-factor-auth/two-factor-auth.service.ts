@@ -20,7 +20,7 @@ export class TwoFactorAuthService {
     );
 
     const qrCodeUrl = await qrcode.toDataURL(
-      `otpauth://totp/${user.username}?secret=${secret}&issuer=YourApp`,
+      `otpauth://totp/${user.username}?secret=${secret}&issuer=CMS`,
     );
 
     return { qrCodeUrl };
