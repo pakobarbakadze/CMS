@@ -16,21 +16,21 @@ import { TwoFactorAuthService } from './two-factor-auth.service';
 export class TwoFactorAuthController {
   constructor(private readonly twoFactorAuthService: TwoFactorAuthService) {}
 
-  @Post('/enable-2fa')
+  @Post('/enable')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   enableTwoFactorAuth(@Req() req: AuthorizedRequest) {
     return this.twoFactorAuthService.enableTwoFactorAuth(req.user);
   }
 
-  @Post('/disable-2fa')
+  @Post('/disable')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   disableTwoFactorAuth(@Req() req: AuthorizedRequest) {
     return this.twoFactorAuthService.disableTwoFactorAuth(req.user);
   }
 
-  @Post('/verify-2fa')
+  @Post('/verify')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   verifyTwoFactorAuth(
