@@ -1,3 +1,4 @@
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as qrcode from 'qrcode';
 import * as speakeasy from 'speakeasy';
@@ -11,62 +12,53 @@ export class TwoFactorAuthService {
   ) {}
 
   async enableTwoFactorAuth(user: User) {
-    const secret = this.generateSecret();
+    const secret = speakeasy.generateSecret({ length: 20 }).base32;
 
     await this.userRepository.update(
       { id: user.id },
       { twoFactorSecret: secret },
     );
 
-    const qrCodeUrl = await this.generateQRCodeUrl(user.username, secret);
-
-    const htmlResponse = `
-      <html>
-        <body>
-          <p>Scan the QR code below to enable two-factor authentication:</p>
-          <img src="${qrCodeUrl}" alt="QR Code">
-        </body>
-      </html>
-    `;
-
-    return htmlResponse;
-  }
-
-  async disableTwoFactorAuth(user: User) {
-    await this.userRepository.update(
-      { twoFactorSecret: null },
-      { id: user.id },
+    const qrCodeUrl = await qrcode.toDataURL(
+      `otpauth://totp/${user.username}?secret=${secret}&issuer=YourApp`,
     );
 
-    return { message: 'Two-factor authentication disabled successfully' };
+    return { qrCodeUrl };
   }
 
-  verifyTwoFactorAuth(
+  async verifyTwoFactorAuth(
     user: User,
     verifyTwoFactorAuthDto: VerifyTwoFactorAuthDto,
   ) {
     const { token } = verifyTwoFactorAuthDto;
-    const secret = user.twoFactorSecret;
-    const isValid = this.verifyToken(secret, token);
+
+    const { twoFactorSecret } =
+      (await this.userRepository.findOne({
+        where: { id: user.id },
+        select: ['twoFactorSecret'],
+      })) || {};
+
+    if (!twoFactorSecret)
+      throw new NotFoundException('2FA is not enabled for this user');
+
+    const isValid = speakeasy.totp.verify({
+      secret: twoFactorSecret,
+      encoding: 'base32',
+      token,
+    });
+
+    if (!isValid)
+      throw new UnauthorizedException('Invalid two-factor authentication code');
 
     return { isValid };
   }
 
-  private generateSecret(): string {
-    return speakeasy.generateSecret({ length: 20 }).base32;
-  }
-
-  private generateQRCodeUrl(username: string, secret: string): Promise<string> {
-    return qrcode.toDataURL(
-      `otpauth://totp/${username}?secret=${secret}&issuer=YourApp`,
+  async disableTwoFactorAuth(user: User) {
+    await this.userRepository.update(
+      { id: user.id },
+      { twoFactorSecret: null },
     );
-  }
 
-  private verifyToken(secret: string, token: string): boolean {
-    return speakeasy.totp.verify({
-      secret,
-      encoding: 'base32',
-      token,
-    });
+    return { message: 'Two-factor authentication disabled successfully' };
   }
 }
