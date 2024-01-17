@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { CompanyModule } from './modules/company/company.module';
 import { PostsModule } from './modules/post/posts.module';
+import { TwoFactorAuthModule } from './modules/two-factor-auth/two-factor-auth.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { UserModule } from './modules/user/user.module';
     PostsModule,
     CaslModule,
     CompanyModule,
+    TwoFactorAuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

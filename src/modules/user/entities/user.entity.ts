@@ -20,6 +20,9 @@ export class User extends Model {
   })
   role: Role;
 
+  @Column({ nullable: true })
+  twoFactorSecret: string;
+
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 
