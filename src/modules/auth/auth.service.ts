@@ -8,7 +8,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import SignInDto from './dto/sign-in.dto';
 import SignUpDto from './dto/sign-up.dto';
 import { RefreshTokenStorage } from './refresh-token-storage.service';
-import { Payload } from './type/payload.type';
+import { Payload } from './types/type/payload.type';
 
 @Injectable()
 export class AuthService {

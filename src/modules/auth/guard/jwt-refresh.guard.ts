@@ -1,6 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthStrategy } from '../enum/strategy.enum';
+import { AuthStrategy } from '../types/enum/strategy.enum';
 
 @Injectable()
 export class JwtRefreshTokenGuard extends AuthGuard(

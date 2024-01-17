@@ -6,8 +6,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { UserService } from 'src/modules/user/user.service';
 
 import { User } from 'src/modules/user/entities/user.entity';
-import { AuthStrategy } from '../enum/strategy.enum';
-import { JwtPayload } from '../interface/jwt-payload.interface';
+import { AuthStrategy } from '../types/enum/strategy.enum';
+import { JwtPayload } from '../types/type/jwt-payload.type';
 
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
