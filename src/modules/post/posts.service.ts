@@ -13,7 +13,7 @@ export class PostsService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
   ) {}
 
-  create(createPostDto: CreatePostDto, author: User) {
+  create(createPostDto: CreatePostDto, author: User): Promise<Post> {
     const { title, content } = createPostDto;
 
     const post = this.postRepository.create({
@@ -25,7 +25,7 @@ export class PostsService {
     return this.postRepository.save(post);
   }
 
-  findAll(user: User) {
+  findAll(user: User): Promise<Post[]> {
     if (user.role === Role.User) {
       return this.postRepository.find({
         where: { created_at: MoreThanOrEqual(user.created_at) },
@@ -35,7 +35,7 @@ export class PostsService {
     return this.postRepository.find();
   }
 
-  findOne(id: string) {
+  findOne(id: string): Promise<Post> {
     return this.postRepository.findOne({
       where: { id },
       relations: {

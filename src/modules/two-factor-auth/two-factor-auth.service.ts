@@ -11,7 +11,7 @@ export class TwoFactorAuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async enableTwoFactorAuth(user: User) {
+  async enableTwoFactorAuth(user: User): Promise<{ qrCodeUrl: string }> {
     const secret = speakeasy.generateSecret({ length: 20 }).base32;
 
     await this.userRepository.update(
@@ -29,7 +29,7 @@ export class TwoFactorAuthService {
   async verifyTwoFactorAuth(
     user: User,
     verifyTwoFactorAuthDto: VerifyTwoFactorAuthDto,
-  ) {
+  ): Promise<{ isValid: boolean }> {
     const { token } = verifyTwoFactorAuthDto;
 
     const { twoFactorSecret } =
@@ -53,7 +53,7 @@ export class TwoFactorAuthService {
     return { isValid };
   }
 
-  async disableTwoFactorAuth(user: User) {
+  async disableTwoFactorAuth(user: User): Promise<{ message: string }> {
     await this.userRepository.update(
       { id: user.id },
       { twoFactorSecret: null },

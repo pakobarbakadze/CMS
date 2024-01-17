@@ -22,7 +22,9 @@ export class AuthService {
 
   // TODO: should first check if there is already refresh token saved on current device id
   // if there is then return error that user is already signed in.
-  async signIn(signInDto: SignInDto) {
+  async signIn(
+    signInDto: SignInDto,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const { id, username } = signInDto;
 
     const user = await this.userService.findById(id);
@@ -68,7 +70,7 @@ export class AuthService {
   }
 
   // TODO: It should invalidate tokens which have same deviceId as user is sending request from
-  async invalidateToken(authorization: string) {
+  async invalidateToken(authorization: string): Promise<{ message: string }> {
     const token = authorization.split(' ')[1];
     const decoded = await this.jwtService.verifyAsync(token);
     await this.refreshTokenStorage.invalidate(decoded.sub);

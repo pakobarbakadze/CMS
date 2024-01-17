@@ -12,7 +12,7 @@ export class CompanyService {
     private readonly companyRepository: Repository<Company>,
   ) {}
 
-  create(createCompanyDto: CreateCompanyDto) {
+  create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { name } = createCompanyDto;
 
     const company = this.companyRepository.create({ name });
@@ -20,15 +20,15 @@ export class CompanyService {
     return this.companyRepository.save(company);
   }
 
-  findAll() {
+  findAll(): Promise<Company[]> {
     return this.companyRepository.find();
   }
 
-  findById(id: string) {
+  findById(id: string): Promise<Company> {
     return this.companyRepository.findOne({ where: { id } });
   }
 
-  findByName(name: string) {
+  findByName(name: string): Promise<Company> {
     return this.companyRepository.findOne({ where: { name } });
   }
 
