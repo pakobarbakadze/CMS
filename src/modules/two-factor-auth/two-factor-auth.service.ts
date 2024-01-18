@@ -1,23 +1,17 @@
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import * as qrcode from 'qrcode';
 import * as speakeasy from 'speakeasy';
-import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
 import { VerifyTwoFactorAuthDto } from './dto/verify-2fa.dto';
 
 export class TwoFactorAuthService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  async enableTwoFactorAuth(user: User): Promise<{ qrCodeUrl: string }> {
+  public async enableTwoFactorAuth(user: User): Promise<{ qrCodeUrl: string }> {
     const secret = speakeasy.generateSecret({ length: 20 }).base32;
 
-    await this.userRepository.update(
-      { id: user.id },
-      { twoFactorSecret: secret },
-    );
+    await this.userService.update({ id: user.id }, { twoFactorSecret: secret });
 
     const qrCodeUrl = await qrcode.toDataURL(
       `otpauth://totp/${user.username}?secret=${secret}&issuer=CMS`,
@@ -26,14 +20,14 @@ export class TwoFactorAuthService {
     return { qrCodeUrl };
   }
 
-  async verifyTwoFactorAuth(
+  public async verifyTwoFactorAuth(
     user: User,
     verifyTwoFactorAuthDto: VerifyTwoFactorAuthDto,
   ): Promise<{ isValid: boolean }> {
     const { token } = verifyTwoFactorAuthDto;
 
     const { twoFactorSecret } =
-      (await this.userRepository.findOne({
+      (await this.userService.findOne({
         where: { id: user.id },
         select: ['twoFactorSecret'],
       })) || {};
@@ -53,11 +47,8 @@ export class TwoFactorAuthService {
     return { isValid };
   }
 
-  async disableTwoFactorAuth(user: User): Promise<{ message: string }> {
-    await this.userRepository.update(
-      { id: user.id },
-      { twoFactorSecret: null },
-    );
+  public async disableTwoFactorAuth(user: User): Promise<{ message: string }> {
+    await this.userService.update({ id: user.id }, { twoFactorSecret: null });
 
     return { message: 'Two-factor authentication disabled successfully' };
   }

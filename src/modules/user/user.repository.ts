@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
 export class UserRepository {
@@ -7,15 +7,19 @@ export class UserRepository {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  create(user: Partial<User>): User {
+  public create(user: Partial<User>): User {
     return this.userRepository.create(user);
   }
 
-  save(user: User): Promise<User> {
+  public save(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
 
-  findOne(conditions: FindOneOptions<User>): Promise<User> {
+  public findOne(conditions: FindOneOptions<User>): Promise<User> {
     return this.userRepository.findOne(conditions);
+  }
+
+  public update(conditions: FindOptionsWhere<User>, values: Partial<User>) {
+    return this.userRepository.update(conditions, values);
   }
 }
