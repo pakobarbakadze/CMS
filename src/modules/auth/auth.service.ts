@@ -6,7 +6,7 @@ import { User } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import SignInDto from './dto/sign-in.dto';
-import SignUpDto from './dto/sign-up.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 import { RefreshTokenStorage } from './refresh-token-storage.service';
 import { Payload } from './types/type/payload.type';
 

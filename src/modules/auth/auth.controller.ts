@@ -8,19 +8,22 @@ import {
   Post,
   Request,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import SignUpDto from './dto/sign-up.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { JwtRefreshTokenGuard } from './guard/jwt-refresh.guard';
 import { LocalAuthGuard } from './guard/local-auth.guard';
+import { SignUpValidatorPipe } from './validation/sign-up.pipe';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
+  @UsePipes(new SignUpValidatorPipe())
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);
   }
