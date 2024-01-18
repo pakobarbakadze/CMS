@@ -9,7 +9,7 @@ import { Company } from './entities/company.entity';
 export class CompanyService {
   constructor(private readonly companyRepository: CompanyRepository) {}
 
-  create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+  public create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { name } = createCompanyDto;
 
     const company = this.companyRepository.create({ name });
@@ -17,19 +17,19 @@ export class CompanyService {
     return this.companyRepository.save(company);
   }
 
-  findOne(conditions: FindOneOptions): Promise<Company> {
+  public findOne(conditions: FindOneOptions): Promise<Company> {
     return this.companyRepository.findOne(conditions);
   }
 
-  findAll(): Promise<Company[]> {
+  public findAll(): Promise<Company[]> {
     return this.companyRepository.find();
   }
 
-  update(id: string, updateCompanyDto: UpdateCompanyDto) {
+  public update(id: string, updateCompanyDto: UpdateCompanyDto) {
     return `This action updates a #${id} company`;
   }
 
-  remove(id: string) {
+  public remove(id: string) {
     return `This action removes a #${id} company`;
   }
 }

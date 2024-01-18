@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RefreshToken } from './entities/refresh-token.entity';
+import { Repository } from 'typeorm';
 import InsertRefreshTokenDto from './dto/insert-refresh-token.dto';
+import { RefreshToken } from './entities/refresh-token.entity';
 
 @Injectable()
 export class RefreshTokenStorage {
@@ -11,7 +11,9 @@ export class RefreshTokenStorage {
     private readonly refreshTokenRepository: Repository<RefreshToken>,
   ) {}
 
-  async insert(insertRefreshTokenDto: InsertRefreshTokenDto): Promise<void> {
+  public async insert(
+    insertRefreshTokenDto: InsertRefreshTokenDto,
+  ): Promise<void> {
     const { user, deviceId, token } = insertRefreshTokenDto;
 
     const refreshToken = new RefreshToken();
@@ -22,7 +24,7 @@ export class RefreshTokenStorage {
     await this.refreshTokenRepository.save(refreshToken);
   }
 
-  async validate(userId: string, deviceId: string): Promise<boolean> {
+  public async validate(userId: string, deviceId: string): Promise<boolean> {
     const refreshToken = await this.refreshTokenRepository.findOne({
       where: { user: { id: userId }, deviceId },
     });
@@ -32,7 +34,7 @@ export class RefreshTokenStorage {
     return true;
   }
 
-  async invalidate(userId: string): Promise<void> {
+  public async invalidate(userId: string): Promise<void> {
     await this.refreshTokenRepository.delete({ user: { id: userId } });
   }
 }

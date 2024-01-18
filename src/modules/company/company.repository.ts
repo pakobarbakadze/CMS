@@ -8,19 +8,19 @@ export default class CompanyRepository {
     private readonly companyRepository: Repository<Company>,
   ) {}
 
-  create(company: Partial<Company>): Company {
+  public create(company: Partial<Company>): Company {
     return this.companyRepository.create(company);
   }
 
-  save(company: Company): Promise<Company> {
+  public save(company: Company): Promise<Company> {
     return this.companyRepository.save(company);
   }
 
-  findOne(conditions: FindOneOptions<Company>): Promise<Company> {
+  public findOne(conditions: FindOneOptions<Company>): Promise<Company> {
     return this.companyRepository.findOne(conditions);
   }
 
-  find(conditions?: FindManyOptions<Company>): Promise<Company[]> {
+  public find(conditions?: FindManyOptions<Company>): Promise<Company[]> {
     return this.companyRepository.find(conditions);
   }
 }

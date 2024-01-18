@@ -12,7 +12,7 @@ export class UserPasswordService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async changePassword(
+  public async changePassword(
     request: AuthorizedRequest,
     changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
@@ -30,7 +30,7 @@ export class UserPasswordService {
     return savedUser;
   }
 
-  async changeUserPassword(
+  public async changeUserPassword(
     changeUserPasswordDto: ChangeUserPasswordDto,
   ): Promise<User> {
     const { username, password } = changeUserPasswordDto;
