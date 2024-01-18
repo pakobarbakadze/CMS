@@ -27,7 +27,7 @@ export class AuthService {
   ): Promise<{ access_token: string; refresh_token: string }> {
     const { id, username } = signInDto;
 
-    const user = await this.userService.findById(id);
+    const user = await this.userService.findOne({ where: { id } });
 
     const payload: Payload = { sub: id, username: username };
 
