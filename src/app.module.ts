@@ -5,7 +5,7 @@ import { TypeOrmConfig } from './config/db';
 import { AuthModule } from './modules/auth/auth.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { CompanyModule } from './modules/company/company.module';
-import { PostsModule } from './modules/post/posts.module';
+import { PostModule } from './modules/post/post.module';
 import { TwoFactorAuthModule } from './modules/two-factor-auth/two-factor-auth.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -13,7 +13,7 @@ import { UserModule } from './modules/user/user.module';
   imports: [
     AuthModule,
     UserModule,
-    PostsModule,
+    PostModule,
     CaslModule,
     CompanyModule,
     TwoFactorAuthModule,

@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { PostModule } from '../post/post.module';
 import { CaslAbilityFactory } from './casl-ability.factory';
-import { PostsModule } from '../post/posts.module';
 
 @Module({
-  imports: [forwardRef(() => PostsModule)],
+  imports: [forwardRef(() => PostModule)],
   providers: [CaslAbilityFactory],
   exports: [CaslAbilityFactory],
 })

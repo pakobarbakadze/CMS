@@ -1,19 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/types/enum/role.enum';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { DeleteResult, FindOneOptions, MoreThanOrEqual } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
+import { PostRepository } from './post.repository';
 
 @Injectable()
-export class PostsService {
-  constructor(
-    @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-  ) {}
+export class PostService {
+  constructor(private readonly postRepository: PostRepository) {}
 
-  create(createPostDto: CreatePostDto, author: User): Promise<Post> {
+  public create(createPostDto: CreatePostDto, author: User): Promise<Post> {
     const { title, content } = createPostDto;
 
     const post = this.postRepository.create({
@@ -25,7 +23,7 @@ export class PostsService {
     return this.postRepository.save(post);
   }
 
-  findAll(user: User): Promise<Post[]> {
+  public findAll(user: User): Promise<Post[]> {
     if (user.role === Role.User) {
       return this.postRepository.find({
         where: { created_at: MoreThanOrEqual(user.created_at) },
@@ -35,20 +33,15 @@ export class PostsService {
     return this.postRepository.find();
   }
 
-  findOne(id: string): Promise<Post> {
-    return this.postRepository.findOne({
-      where: { id },
-      relations: {
-        author: true,
-      },
-    });
+  public findOne(conditions: FindOneOptions<Post>): Promise<Post> {
+    return this.postRepository.findOne(conditions);
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
+  public update(id: string, updatePostDto: UpdatePostDto) {
     return `This action updates a #${id} post`;
   }
 
-  remove(id: string) {
+  public delete(id: string): Promise<DeleteResult> {
     return this.postRepository.delete(id);
   }
 }
