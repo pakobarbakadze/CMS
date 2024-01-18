@@ -41,14 +41,15 @@ export class AuthService {
   async signUp(signUpDto: SignUpDto): Promise<User> {
     const { username, password, companyName } = signUpDto;
 
-    const company = await this.companyService.findByName(companyName);
+    const company = await this.companyService.findOne({
+      where: { companyName },
+    });
 
     const createdUser = await this.userService.create({
       username,
       password,
       company,
     });
-    delete createdUser.password;
 
     return createdUser;
   }

@@ -27,7 +27,7 @@ export class CompanyController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.companyService.findById(id);
+    return this.companyService.findOne({ where: { id } });
   }
 
   @Patch(':id')

@@ -1,16 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions } from 'typeorm';
+import CompanyRepository from './company.repository';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { Company } from './entities/company.entity';
 
 @Injectable()
 export class CompanyService {
-  constructor(
-    @InjectRepository(Company)
-    private readonly companyRepository: Repository<Company>,
-  ) {}
+  constructor(private readonly companyRepository: CompanyRepository) {}
 
   create(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { name } = createCompanyDto;
@@ -20,16 +17,12 @@ export class CompanyService {
     return this.companyRepository.save(company);
   }
 
+  findOne(conditions: FindOneOptions): Promise<Company> {
+    return this.companyRepository.findOne(conditions);
+  }
+
   findAll(): Promise<Company[]> {
     return this.companyRepository.find();
-  }
-
-  findById(id: string): Promise<Company> {
-    return this.companyRepository.findOne({ where: { id } });
-  }
-
-  findByName(name: string): Promise<Company> {
-    return this.companyRepository.findOne({ where: { name } });
   }
 
   update(id: string, updateCompanyDto: UpdateCompanyDto) {
