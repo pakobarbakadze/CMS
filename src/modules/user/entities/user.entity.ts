@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt';
-import Model from 'src/entities/model.entity';
+import Model from 'src/common/entities/model.entity';
+import { Role } from 'src/common/types/enum/role.enum';
 import { Company } from 'src/modules/company/entities/company.entity';
 import { Post } from 'src/modules/post/entities/post.entity';
-import { Role } from 'src/types/enum/role.enum';
 import { BeforeInsert, Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity('users')

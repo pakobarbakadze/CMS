@@ -7,7 +7,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { AuthorizedRequest } from 'src/common/types/interface/request.interface';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { VerifyTwoFactorAuthDto } from './dto/verify-2fa.dto';
 import { TwoFactorAuthService } from './two-factor-auth.service';

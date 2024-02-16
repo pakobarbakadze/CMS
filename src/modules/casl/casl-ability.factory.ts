@@ -5,7 +5,7 @@ import {
   mongoQueryMatcher,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { Role } from 'src/types/enum/role.enum';
+import { Role } from 'src/common/types/enum/role.enum';
 import { Post } from '../post/entities/post.entity';
 import { User } from '../user/entities/user.entity';
 import { Action } from './types/enum/action.enum';

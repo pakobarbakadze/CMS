@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from 'src/types/enum/role.enum';
+import { Role } from 'src/common/types/enum/role.enum';
 import { DeleteResult, FindOneOptions, MoreThanOrEqual } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';

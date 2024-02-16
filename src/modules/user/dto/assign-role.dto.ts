@@ -1,4 +1,4 @@
-import { Role } from 'src/types/enum/role.enum';
+import { Role } from 'src/common/types/enum/role.enum';
 
 export class AssignRoleDto {
   username: string;

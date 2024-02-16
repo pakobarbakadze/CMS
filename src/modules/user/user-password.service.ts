@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { AuthorizedRequest } from 'src/common/types/interface/request.interface';
 import { Repository } from 'typeorm';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ChangeUserPasswordDto } from './dto/change-user-password.dto';

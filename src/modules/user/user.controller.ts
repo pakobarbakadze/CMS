@@ -7,8 +7,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Role } from 'src/types/enum/role.enum';
-import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { Role } from 'src/common/types/enum/role.enum';
+import { AuthorizedRequest } from 'src/common/types/interface/request.interface';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';

@@ -9,7 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AuthorizedRequest } from 'src/types/interface/request.interface';
+import { AuthorizedRequest } from 'src/common/types/interface/request.interface';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { checkAbilites } from '../casl/decorator/abilities.decorator';
 import { PostAbilityGuard } from '../casl/guard/post-ability.guard';
