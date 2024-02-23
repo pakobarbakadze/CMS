@@ -1,4 +1,5 @@
 export default class SignInDto {
-  id: string;
   username: string;
+  password: string;
+  deviceId: string;
 }

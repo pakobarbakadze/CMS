@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { CompanyService } from '../company/company.service';
-import { User } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import SignInDto from './dto/sign-in.dto';
-import { SignUpDto } from './dto/sign-up.dto';
-import { RefreshTokenStorage } from './refresh-token-storage.service';
-import { Payload } from './types/type/payload.type';
+import { CompanyService } from '../../company/company.service';
+import { User } from '../../user/entities/user.entity';
+import { UserService } from '../../user/user.service';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { SignUpDto } from '../dto/sign-up.dto';
+import { JwtPayload } from '../types/type/jwt-payload.type';
+import { Payload } from '../types/type/payload.type';
+import { RefreshTokenService } from './refresh-token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly companyService: CompanyService,
-    private readonly refreshTokenStorage: RefreshTokenStorage,
+    private readonly refreshTokenService: RefreshTokenService,
     private readonly configSercive: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -23,17 +23,18 @@ export class AuthService {
   // TODO: should first check if there is already refresh token saved on current device id
   // if there is then return error that user is already signed in.
   public async signIn(
-    signInDto: SignInDto,
+    user: User,
+    deviceId: string,
   ): Promise<{ access_token: string; refresh_token: string }> {
-    const { id, username } = signInDto;
-
-    const user = await this.userService.findOne({ where: { id } });
-
-    const payload: Payload = { sub: id, username: username };
+    const payload: JwtPayload = { sub: user.id, username: user.username };
 
     const [accessToken, refreshToken] = await this.signTokens(payload);
 
-    await this.refreshTokenStorage.insert({ user, token: refreshToken });
+    await this.refreshTokenService.insert({
+      user,
+      deviceId,
+      token: refreshToken,
+    });
 
     return { access_token: accessToken, refresh_token: refreshToken };
   }
@@ -63,7 +64,7 @@ export class AuthService {
     const decoded = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.configSercive.get<string>('REFRESH_JWT_SECRET'),
     });
-    await this.refreshTokenStorage.validate(decoded.sub, deviceId);
+    await this.refreshTokenService.validate(decoded.sub, deviceId);
     const payload = { sub: decoded.sub, username: decoded.username };
     const accessToken = await this.jwtService.signAsync(payload);
 
@@ -76,7 +77,7 @@ export class AuthService {
   ): Promise<{ message: string }> {
     const token = authorization.split(' ')[1];
     const decoded = await this.jwtService.verifyAsync(token);
-    await this.refreshTokenStorage.invalidate(decoded.sub);
+    await this.refreshTokenService.invalidate(decoded.sub);
 
     return { message: 'Token invalidated successfully' };
   }

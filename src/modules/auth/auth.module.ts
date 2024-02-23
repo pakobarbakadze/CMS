@@ -3,13 +3,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { UserModule } from '../user/user.module';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { RefreshTokenStorage } from './refresh-token-storage.service';
+import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './services/auth.service';
+import { RefreshTokenService } from './services/refresh-token.service';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CompanyModule } from '../company/company.module';
+import { TwoFactorAuthController } from './controllers/two-factor-auth.controller';
 import { RefreshToken } from './entities/refresh-token.entity';
+import { TwoFactorAuthService } from './services/two-factor-auth.service';
 import { JwtRefreshTokenStrategy } from './strategy/jwt-refresh.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { LocalStrategy } from './strategy/local.strategy';
@@ -27,11 +29,12 @@ import { LocalStrategy } from './strategy/local.strategy';
   ],
   providers: [
     AuthService,
-    RefreshTokenStorage,
+    RefreshTokenService,
+    TwoFactorAuthService,
     LocalStrategy,
     JwtStrategy,
     JwtRefreshTokenStrategy,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, TwoFactorAuthController],
 })
 export class AuthModule {}

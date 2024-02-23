@@ -1,9 +1,9 @@
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import * as qrcode from 'qrcode';
 import * as speakeasy from 'speakeasy';
-import { User } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
-import { VerifyTwoFactorAuthDto } from './dto/verify-2fa.dto';
+import { User } from '../../user/entities/user.entity';
+import { UserService } from '../../user/user.service';
+import { VerifyTwoFactorAuthDto } from '../dto/verify-2fa.dto';
 
 export class TwoFactorAuthService {
   constructor(private readonly userService: UserService) {}

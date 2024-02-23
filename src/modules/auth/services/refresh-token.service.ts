@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import InsertRefreshTokenDto from './dto/insert-refresh-token.dto';
-import { RefreshToken } from './entities/refresh-token.entity';
+import InsertRefreshTokenDto from '../dto/insert-refresh-token.dto';
+import { RefreshToken } from '../entities/refresh-token.entity';
 
 @Injectable()
-export class RefreshTokenStorage {
+export class RefreshTokenService {
   constructor(
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>,
@@ -16,10 +16,11 @@ export class RefreshTokenStorage {
   ): Promise<void> {
     const { user, deviceId, token } = insertRefreshTokenDto;
 
-    const refreshToken = new RefreshToken();
-    refreshToken.user = user;
-    refreshToken.deviceId = deviceId;
-    refreshToken.refreshToken = token;
+    const refreshToken = this.refreshTokenRepository.create({
+      user,
+      deviceId,
+      refreshToken: token,
+    });
 
     await this.refreshTokenRepository.save(refreshToken);
   }

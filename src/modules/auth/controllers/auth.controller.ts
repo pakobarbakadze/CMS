@@ -10,13 +10,16 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { SignUpDto } from './dto/sign-up.dto';
-import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { JwtRefreshTokenGuard } from './guard/jwt-refresh.guard';
-import { LocalAuthGuard } from './guard/local-auth.guard';
-import { SignUpValidatorPipe } from './validation/sign-up.pipe';
+import { User } from '../../user/entities/user.entity';
+import { CurrentUser } from '../decorator/current-user.decorator';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import SignInDto from '../dto/sign-in.dto';
+import { SignUpDto } from '../dto/sign-up.dto';
+import { JwtAuthGuard } from '../guard/jwt-auth.guard';
+import { JwtRefreshTokenGuard } from '../guard/jwt-refresh.guard';
+import { LocalAuthGuard } from '../guard/local-auth.guard';
+import { AuthService } from '../services/auth.service';
+import { SignUpValidatorPipe } from '../validation/sign-up.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -31,8 +34,8 @@ export class AuthController {
   @Post('sign-in')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  signIn(@Request() req: any) {
-    return this.authService.signIn(req.user);
+  signIn(@CurrentUser() user: User, @Body() body: SignInDto) {
+    return this.authService.signIn(user, body.deviceId);
   }
 
   @Post('sign-out')
