@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
 
+@Injectable()
 export default class CompanyRepository {
   constructor(
     @InjectRepository(Company)

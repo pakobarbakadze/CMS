@@ -5,36 +5,36 @@ import { User } from '../user/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
-import { PostRepository } from './post.repository';
+import { PostsRepository } from './post.repository';
 
 @Injectable()
-export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
+export class PostsService {
+  constructor(private readonly postsRepository: PostsRepository) {}
 
   public create(createPostDto: CreatePostDto, author: User): Promise<Post> {
     const { title, content } = createPostDto;
 
-    const post = this.postRepository.create({
+    const post = this.postsRepository.create({
       title,
       content,
       author,
     });
 
-    return this.postRepository.save(post);
+    return this.postsRepository.save(post);
   }
 
   public findAll(user: User): Promise<Post[]> {
     if (user.role === Role.User) {
-      return this.postRepository.find({
+      return this.postsRepository.find({
         where: { created_at: MoreThanOrEqual(user.created_at) },
       });
     }
 
-    return this.postRepository.find();
+    return this.postsRepository.find();
   }
 
   public findOne(conditions: FindOneOptions<Post>): Promise<Post> {
-    return this.postRepository.findOne(conditions);
+    return this.postsRepository.findOne(conditions);
   }
 
   public update(id: string, updatePostDto: UpdatePostDto) {
@@ -42,6 +42,6 @@ export class PostService {
   }
 
   public delete(id: string): Promise<DeleteResult> {
-    return this.postRepository.delete(id);
+    return this.postsRepository.delete(id);
   }
 }

@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeleteResult,
@@ -7,7 +8,8 @@ import {
 } from 'typeorm';
 import { Post } from './entities/post.entity';
 
-export class PostRepository {
+@Injectable()
+export class PostsRepository {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
   ) {}

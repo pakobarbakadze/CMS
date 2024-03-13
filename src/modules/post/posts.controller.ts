@@ -17,11 +17,11 @@ import { Action } from '../casl/types/enum/action.enum';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post as PostEntity } from './entities/post.entity';
-import { PostService } from './post.service';
+import { PostsService } from './posts.service';
 
 @Controller('post')
 export class PostsController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostsService) {}
 
   @Post()
   @checkAbilites({ action: Action.Create, subject: PostEntity })
