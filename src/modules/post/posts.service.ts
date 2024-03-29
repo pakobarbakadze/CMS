@@ -38,7 +38,7 @@ export class PostsService {
   }
 
   public update(id: string, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+    return this.postsRepository.update(id, updatePostDto);
   }
 
   public delete(id: string): Promise<DeleteResult> {

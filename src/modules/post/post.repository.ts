@@ -5,6 +5,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 import { Post } from './entities/post.entity';
 
@@ -14,12 +15,12 @@ export class PostsRepository {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
   ) {}
 
-  public create(company: Partial<Post>): Post {
-    return this.postRepository.create(company);
+  public create(post: Partial<Post>): Post {
+    return this.postRepository.create(post);
   }
 
-  public save(company: Post): Promise<Post> {
-    return this.postRepository.save(company);
+  public save(post: Post): Promise<Post> {
+    return this.postRepository.save(post);
   }
 
   public findOne(conditions: FindOneOptions<Post>): Promise<Post> {
@@ -32,5 +33,9 @@ export class PostsRepository {
 
   public delete(id: string): Promise<DeleteResult> {
     return this.postRepository.delete(id);
+  }
+
+  public update(id: string, post: Partial<Post>): Promise<UpdateResult> {
+    return this.postRepository.update(id, post);
   }
 }

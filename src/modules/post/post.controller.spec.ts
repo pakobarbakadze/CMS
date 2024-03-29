@@ -4,6 +4,7 @@ import { AuthorizedRequest } from 'src/common/types/interface/request.interface'
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { PostAbilityGuard } from '../casl/guard/post-ability.guard';
 import { User } from '../user/entities/user.entity';
+import { CreatePostDto } from './dto/create-post.dto';
 import { Post } from './entities/post.entity';
 import { PostsRepository } from './post.repository';
 import { PostsController } from './posts.controller';
@@ -16,7 +17,13 @@ describe('PostsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostsController],
-      providers: [PostsService, { provide: PostsRepository, useValue: {} }],
+      providers: [
+        PostsService,
+        {
+          provide: PostsRepository,
+          useValue: {},
+        },
+      ],
     })
       .overrideGuard(JwtAuthGuard)
       .useValue({ canActivate: () => true })
@@ -30,6 +37,28 @@ describe('PostsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should create a new post', async () => {
+      const createPostDto: CreatePostDto = {
+        title: 'test',
+        content: 'test',
+      };
+
+      const request: AuthorizedRequest = {
+        user: { id: '0' } as User,
+      } as AuthorizedRequest;
+
+      const post: Post = { id: '0', ...createPostDto } as Post;
+
+      jest.spyOn(service, 'create').mockResolvedValue(post);
+
+      const result = await controller.create(request, createPostDto);
+
+      expect(result).toBeDefined();
+      expect(service.create).toHaveBeenCalledWith(createPostDto, request.user);
+    });
   });
 
   describe('findAll', () => {
@@ -52,8 +81,26 @@ describe('PostsController', () => {
       const result = await controller.findAll(request);
 
       expect(result).toEqual(mockPosts);
-
       expect(service.findAll).toHaveBeenCalledWith(request.user);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a specific post', async () => {
+      const postId = '1';
+
+      const mockPost: Post = {
+        id: '0',
+        title: 'Post',
+        content: 'Content',
+      } as Post;
+
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockPost);
+
+      const result = await controller.findOne(postId);
+
+      expect(result).toEqual(mockPost);
+      expect(service.findOne).toHaveBeenCalledWith({ where: { id: postId } });
     });
   });
 });
